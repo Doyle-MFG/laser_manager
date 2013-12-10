@@ -1,0 +1,164 @@
+"""
+Use this is create connections with databases.
+"""
+from PyQt4 import QtGui, QtSql, QtCore, uic
+import threading
+
+
+def default_connection():
+    """
+    Creates a new connection using the default connection name.
+    'reader' user should only have Select permissions
+    Returns false if the connection couldn't be made.
+    """
+    
+    QtSql.QSqlDatabase.database('qt_sql_default_connection').close()
+    QtSql.QSqlDatabase.removeDatabase('qt_sql_default_connection')
+    db = QtSql.QSqlDatabase.addDatabase("QMYSQL")
+    host, database = read_settings("default")
+    db.setUserName('reader')
+    db.setHostName(host)
+    db.setDatabaseName(database)
+    if db.open():
+        return True
+    else:
+        db_err(db)
+        return False
+
+
+def new_connection(name, user, password, host=None, database=None):
+    """
+    Returns a new connection named 'name'. 'user' and 'password'
+    must be supplied. Use this function to create a privileged 
+    connection or to connect to a different server.
+    
+    If a connection named 'name' already exists it returns that
+    connection instead of making a new connection. New connections 
+    "timeout" after 10 minutes and are removed. 
+    
+    Returns an empty connection and False if the new connection 
+    could not be made.
+    """
+    if QtSql.QSqlDatabase.database(name).open():
+        db = QtSql.QSqlDatabase.database(name)
+        return db, True
+    else:
+        if host == None or database == None:
+            host, database = read_settings(name)
+        db = QtSql.QSqlDatabase.addDatabase("QMYSQL", name)
+        db.setUserName(user)
+        db.setHostName(host)
+        db.setDatabaseName(database)
+        db.setPassword(password)
+        if db.open():
+            dbt = threading.Timer(600, close_connection, args=[name])
+            dbt.start()
+            return db, True
+        else:
+            db_err(db)
+            return None, False
+
+
+def check_connection():
+    """
+    Keeps the connection from timing out and throwing a bunch
+    of errors at the user.
+    """
+    qry = QtSql.QSqlQuery()
+    try:
+        if qry.exec_("Select name from user"):
+            return True, None
+        else:
+            print "Connection Checked - Error"
+            return False, qry.lastError().text()
+    except:
+        print "Connection Checked - Failed"
+        return False, qry.lastError().text()
+
+
+def close_connection(name):
+    """
+    Close and remove the connection 'name' if it is open.
+    """
+    if QtSql.QSqlDatabase.database(name).open():
+        QtSql.QSqlDatabase.database(name).close()
+    QtSql.QSqlDatabase.removeDatabase(name)
+    print "Connection closed. New connection required"
+
+
+def close_all_connections():
+    """
+    Loops all connections, closes and removes them.
+    """
+    for name in QtSql.QSqlDatabase.connectionNames():
+        if QtSql.QSqlDatabase.database(name).open():
+            QtSql.QSqlDatabase.database(name).close()
+        QtSql.QSqlDatabase.removeDatabase(name)
+
+
+def db_err(qry):
+    """
+    This error is used extensively.
+    """
+    if qry is None:
+        QtGui.QMessageBox.critical(None, "Database Error", "An unknown error occurred")
+    else:
+        QtGui.QMessageBox.critical(None, "Database Error", qry.lastError().text())
+    return
+
+####Settings Block
+#Reads and saves database settings across sessions.
+
+
+def write_settings(host, database, group):
+    settings = QtCore.QSettings("Doyle Mfg", "CL850 Manager")
+    settings.setDefaultFormat(1)
+    settings.beginGroup(group)
+    settings.setValue('host', QtCore.QString(host))
+    settings.setValue('database', QtCore.QString(database))
+    settings.endGroup()
+
+
+def read_settings(group):
+    settings = QtCore.QSettings("Doyle Mfg", "CL850 Manager")
+    settings.setDefaultFormat(1)
+    settings.beginGroup(group)
+    host = settings.value('host', None)
+    database = settings.value('database', None)
+    if host == None or database == None:
+        dbs = DatabaseSettings()
+        while host == None or database == None:
+            host, database = dbs.get_data(group)
+        write_settings(host, database, group)
+    else:
+        host = host.toString()
+        database = database.toString()
+    return host, database
+
+
+class DatabaseSettings(QtGui.QDialog):
+    """
+    Opens a dialog to enter network settings if
+    there are no settings in the config error.
+    """
+    def __init__(self, parent=None):
+        QtGui.QDialog.__init__(self, parent)
+        uic.loadUi('ui/databaseSettings.ui', self)
+        
+    def get_data(self, name):
+        self.setWindowTitle('%s - Database Settings' % name)
+        self.exec_()
+        host = self.hostname.text()
+        database = self.database.text()
+        if host != "":
+            if database != "":
+                return host, database
+            else:
+                self.database.setFocus()
+                return host, None
+        else:
+            self.hostname.setFocus()
+            return None, None
+    
+    def reject(self):
+        self.done(0)
