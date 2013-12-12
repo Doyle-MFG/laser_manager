@@ -8,7 +8,7 @@ work_order_pdf_check = "Select job_Id from workOrderPDF where job_Id={0}"
 finish_work_order = "Update Work_Orders_tbl set `show`=0 where Job_ID = {0}"
 modify_work_order = "Update Work_Orders_tbl set modifying=if(modifying=0,1,0) where Job_ID = {0}"
 update_work_order = "Update Work_Orders_tbl Set priority={1},material='{2}',materialQty={3} where Job_ID={0}"
-insert_pdf = "Replace into workOrderPDF (job_Id, report_file) VALUES({0}, 0x{1})"
+insert_pdf = "Replace into workOrderPDF (job_Id, file) VALUES({0}, 0x{1})"
 get_pdf = "Select file from workOrderPDF where job_Id = {0}"
 report_header_data = ("Select Job_num, date_Format(JDate, '%Y-%m-%d'), Machine_Desc from Work_Orders_tbl join "
                       "Machine_tbl on Work_Orders_tbl.Machine_ID = Machine_tbl.Machine_ID Where Job_ID = {0}")

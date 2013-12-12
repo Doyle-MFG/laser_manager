@@ -145,9 +145,7 @@ class DatabaseSettings(QtGui.QDialog):
         QtGui.QDialog.__init__(self, parent)
         self.setObjectName("Database Settings")
         self.resize(250, 111)
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(":/icons/appLogo.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.setWindowIcon(icon)
+        self.setWindowIcon(QtGui.QIcon(":/icons/appLogo.png"))
         layout = QtGui.QGridLayout(self)
         self.hostname_label = QtGui.QLabel("Hostname", self)
         self.database_label = QtGui.QLabel("Database", self)
@@ -155,6 +153,7 @@ class DatabaseSettings(QtGui.QDialog):
         self.database = QtGui.QLineEdit(self)
         self.buttons = QtGui.QDialogButtonBox(self)
         self.buttons.setStandardButtons(QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
+
         layout.addWidget(self.hostname_label, 0, 0)
         layout.addWidget(self.hostname, 0, 1)
         layout.addWidget(self.database_label, 1, 0)

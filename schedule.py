@@ -10,7 +10,7 @@ import functions
 from query import query
 
 
-class Schedule(QtGui.QMainWindow):
+class Schedule(QtGui.QWidget):
     """
     Schedule
     This is the schedule screen. It is used to generate the schedule for each laser
@@ -21,62 +21,42 @@ class Schedule(QtGui.QMainWindow):
 
     def __init__(self, schedule, parent=None):
         QtGui.QWidget.__init__(self, parent)
-        self.setObjectName("Schedule")
-        self.resize(931, 637)
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(":/icons/production.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.setWindowIcon(icon)
+        self.setWindowTitle("Schedule")
+        self.setWindowIcon(QtGui.QIcon(":/icons/production.png"))
         self.setStyleSheet("background-color: rgb(200, 200, 200);")
-        self.centralwidget = QtGui.QWidget(self)
-        self.verticalLayout = QtGui.QVBoxLayout(self.centralwidget)
-        self.horizontalLayout = QtGui.QHBoxLayout()
-        self.title = QtGui.QLabel(self.centralwidget)
-        font = QtGui.QFont()
-        font.setFamily("Terminus")
-        font.setPointSize(24)
-        font.setBold(True)
-        font.setWeight(75)
-        self.title.setFont(font)
-        self.horizontalLayout.addWidget(self.title)
-        spacerItem = QtGui.QSpacerItem(478, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.horizontalLayout.addItem(spacerItem)
-        self.horizontalLayout.setStretch(1, 1)
-        self.verticalLayout.addLayout(self.horizontalLayout)
-        self.line = QtGui.QFrame(self.centralwidget)
+
+        self.title = QtGui.QLabel(self)
+        self.title.setFont(QtGui.QFont("Terminus", 24, 75, False))
+        self.top_layout = QtGui.QHBoxLayout()
+        self.top_layout.addWidget(self.title)
+        self.top_layout.addStretch(1)
+
+        self.line = QtGui.QFrame(self)
         self.line.setFrameShape(QtGui.QFrame.HLine)
         self.line.setFrameShadow(QtGui.QFrame.Sunken)
-        self.verticalLayout.addWidget(self.line)
-        self.scrollArea = QtGui.QScrollArea(self.centralwidget)
-        self.scrollArea.setFrameShape(QtGui.QFrame.NoFrame)
-        self.scrollArea.setWidgetResizable(True)
-        self.scrollAreaWidgetContents_2 = QtGui.QWidget()
-        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 919, 530))
-        self.horizontalLayout_2 = QtGui.QHBoxLayout(self.scrollAreaWidgetContents_2)
-        self.horizontalLayout_2.setSpacing(0)
-        self.horizontalLayout_2.setMargin(0)
-        self.scheduleFrame = QtGui.QFrame(self.scrollAreaWidgetContents_2)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.scheduleFrame.sizePolicy().hasHeightForWidth())
-        self.scheduleFrame.setSizePolicy(sizePolicy)
-        self.scheduleFrame.setStyleSheet("background-color: rgb(255, 255, 255);")
-        self.scheduleFrame.setFrameShape(QtGui.QFrame.StyledPanel)
-        self.scheduleFrame.setFrameShadow(QtGui.QFrame.Raised)
-        self.verticalLayout_2 = QtGui.QVBoxLayout(self.scheduleFrame)
-        self.verticalLayout_2.setSpacing(6)
-        self.verticalLayout_2.setSizeConstraint(QtGui.QLayout.SetMinimumSize)
-        self.verticalLayout_2.setContentsMargins(-1, 4, -1, 5)
-        self.horizontalLayout_2.addWidget(self.scheduleFrame)
-        self.scrollArea.setWidget(self.scrollAreaWidgetContents_2)
-        self.verticalLayout.addWidget(self.scrollArea)
-        spacerItem1 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.verticalLayout.addItem(spacerItem1)
-        self.verticalLayout.setStretch(2, 1)
-        self.setCentralWidget(self.centralwidget)
+
+        self.scroll = QtGui.QScrollArea(self)
+        self.scroll.setFrameShape(QtGui.QFrame.NoFrame)
+        self.scroll.setWidgetResizable(True)
+
+        self.schedule_frame = QtGui.QFrame(self.scroll)
+        self.schedule_frame.setStyleSheet("background-color: rgb(255, 255, 255);")
+        self.schedule_frame.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.schedule_frame.setFrameShadow(QtGui.QFrame.Raised)
+        self.schedule_layout = QtGui.QVBoxLayout(self.schedule_frame)
+        self.schedule_layout.setSpacing(6)
+        self.schedule_layout.setContentsMargins(-1, 4, -1, 5)
+        self.scroll.setWidget(self.schedule_frame)
+
+        self.layout = QtGui.QVBoxLayout(self)
+        self.layout.addLayout(self.top_layout)
+        self.layout.addWidget(self.line)
+        self.layout.addWidget(self.scroll)
+
         self.schedule = schedule
         self.setWindowTitle("%s Manager" % self.schedule)
         self.title.setText("%s Manager" % self.schedule)
+
         #Connect to the update signal
         self.updateSchedule.connect(self.update_schedule_)
         
@@ -107,21 +87,21 @@ class Schedule(QtGui.QMainWindow):
                 row.append(self.schedule_qry.value(i))
             self.schedule_data.append(row)
             
-            pdfqry = query("work_order_pdf_check", [self.schedule_qry.value(8).toString()])
-            if pdfqry:
-                if pdfqry.first():
-                    hasprint = True
+            pdf_qry = query("work_order_pdf_check", [self.schedule_qry.value(8).toString()])
+            if pdf_qry:
+                if pdf_qry.first():
+                    has_print = True
                 else:
-                    hasprint = False
+                    has_print = False
             else:
-                hasprint = False
+                has_print = False
             
             #Send the data to the display function so it can be added
             #to the layout.
-            self.new_row(self.schedule_qry.record(), hasprint)
+            self.new_row(self.schedule_qry.record(), has_print)
             
         #Pushes all the rows together at the top of the page
-        self.scheduleFrame.layout().insertStretch(-1)
+        self.schedule_frame.layout().insertStretch(-1)
         
         #Set up update timer. Currently set to update once a second.
         self.startTimer(1000)
@@ -156,7 +136,7 @@ class Schedule(QtGui.QMainWindow):
         Removes all the current row widgets then calls the schedule data
         function and passes the check query to prevent it from being reran.
         """
-        layout = self.scheduleFrame.layout()
+        layout = self.schedule_frame.layout()
         functions.clear_layout(layout)
         self.get_schedule_data(qry)
         return
@@ -198,7 +178,7 @@ class Schedule(QtGui.QMainWindow):
         row.material.editingFinished.connect(self.row_editing_finished)
         row.material_qty.editingFinished.connect(self.row_editing_finished)
         
-        self.scheduleFrame.layout().addWidget(row)
+        self.schedule_frame.layout().addWidget(row)
         return
         
     def hide_job_(self):

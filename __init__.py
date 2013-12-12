@@ -33,27 +33,27 @@ import graphics
 import dbConnection
 from main import Main
 
-from reportlab.pdfbase import _fontdata_widths_courier #@UnresolvedImport @UnusedImport
-from reportlab.pdfbase import _fontdata_widths_courierbold #@UnresolvedImport @UnusedImport
-from reportlab.pdfbase import _fontdata_widths_courieroblique #@UnresolvedImport @UnusedImport
-from reportlab.pdfbase import _fontdata_widths_courierboldoblique #@UnresolvedImport @UnusedImport
-from reportlab.pdfbase import _fontdata_widths_helvetica #@UnresolvedImport @UnusedImport
-from reportlab.pdfbase import _fontdata_widths_helveticabold #@UnresolvedImport @UnusedImport
-from reportlab.pdfbase import _fontdata_widths_helveticaoblique #@UnresolvedImport @UnusedImport
-from reportlab.pdfbase import _fontdata_widths_helveticaboldoblique #@UnresolvedImport @UnusedImport
-from reportlab.pdfbase import _fontdata_widths_timesroman #@UnresolvedImport @UnusedImport
-from reportlab.pdfbase import _fontdata_widths_timesbold #@UnresolvedImport @UnusedImport
-from reportlab.pdfbase import _fontdata_widths_timesitalic #@UnresolvedImport @UnusedImport
-from reportlab.pdfbase import _fontdata_widths_timesbolditalic #@UnresolvedImport @UnusedImport
-from reportlab.pdfbase import _fontdata_widths_symbol #@UnresolvedImport @UnusedImport
-from reportlab.pdfbase import _fontdata_widths_zapfdingbats #@UnresolvedImport @UnusedImport
-from reportlab.pdfbase import _fontdata_enc_winansi #@UnresolvedImport @UnusedImport
-from reportlab.pdfbase import _fontdata_enc_macroman #@UnresolvedImport @UnusedImport
-from reportlab.pdfbase import _fontdata_enc_standard #@UnresolvedImport @UnusedImport
-from reportlab.pdfbase import _fontdata_enc_symbol #@UnresolvedImport @UnusedImport
-from reportlab.pdfbase import _fontdata_enc_zapfdingbats #@UnresolvedImport @UnusedImport
-from reportlab.pdfbase import _fontdata_enc_pdfdoc #@UnresolvedImport @UnusedImport
-from reportlab.pdfbase import _fontdata_enc_macexpert #@UnresolvedImport @UnusedImport
+from reportlab.pdfbase import _fontdata_widths_courier
+from reportlab.pdfbase import _fontdata_widths_courierbold
+from reportlab.pdfbase import _fontdata_widths_courieroblique
+from reportlab.pdfbase import _fontdata_widths_courierboldoblique
+from reportlab.pdfbase import _fontdata_widths_helvetica
+from reportlab.pdfbase import _fontdata_widths_helveticabold
+from reportlab.pdfbase import _fontdata_widths_helveticaoblique
+from reportlab.pdfbase import _fontdata_widths_helveticaboldoblique
+from reportlab.pdfbase import _fontdata_widths_timesroman
+from reportlab.pdfbase import _fontdata_widths_timesbold
+from reportlab.pdfbase import _fontdata_widths_timesitalic
+from reportlab.pdfbase import _fontdata_widths_timesbolditalic
+from reportlab.pdfbase import _fontdata_widths_symbol
+from reportlab.pdfbase import _fontdata_widths_zapfdingbats
+from reportlab.pdfbase import _fontdata_enc_winansi
+from reportlab.pdfbase import _fontdata_enc_macroman
+from reportlab.pdfbase import _fontdata_enc_standard
+from reportlab.pdfbase import _fontdata_enc_symbol
+from reportlab.pdfbase import _fontdata_enc_zapfdingbats
+from reportlab.pdfbase import _fontdata_enc_pdfdoc
+from reportlab.pdfbase import _fontdata_enc_macexpert
 
 
 #Colors
