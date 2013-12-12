@@ -126,7 +126,8 @@ class NewRow(QtGui.QFrame):
                     style="border-width:0px;background-color: rgb(255, 255, 255);")
         init_format(self.hide_job, max_size=None, min_size=None, align=None, flat=None,
                     style="border-width:0px;background-color: rgb(255, 255, 255);")
-        init_format(self.notes, max_size=QtCore.QSize(800, 50), align=None, flat=None)
+        init_format(self.notes, max_size=QtCore.QSize(800, 50), align=None, flat=None,
+                    style="border-width:0px;background-color: rgb(255, 255, 255);")
 
         self.line = QtGui.QFrame(self)
         self.line.setLineWidth(2)

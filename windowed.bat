@@ -1,1 +1,1 @@
-C:\Python27\Scripts\pyinstaller.exe -i C:\Users\Ryan\Documents\GitHub\post_laser_schedule\post_laser_schedule.ico -n "Post_Laser_Schedule(Windowed)" C:\Users\Ryan\Documents\GitHub\post_laser_schedule\__init__.py
+C:\Python27\Scripts\pyinstaller.exe -i C:\Users\Ryan\Documents\GitHub\laser_manager\production.ico -n "Laser_Manager(Windowed)" C:\Users\Ryan\Documents\GitHub\laser_manager\__init__.py
