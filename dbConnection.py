@@ -143,7 +143,26 @@ class DatabaseSettings(QtGui.QDialog):
     """
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent)
-        uic.loadUi('ui/databaseSettings.ui', self)
+        self.setObjectName("Database Settings")
+        self.resize(250, 111)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/icons/appLogo.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.setWindowIcon(icon)
+        layout = QtGui.QGridLayout(self)
+        self.hostname_label = QtGui.QLabel("Hostname", self)
+        self.database_label = QtGui.QLabel("Database", self)
+        self.hostname = QtGui.QLineEdit(self)
+        self.database = QtGui.QLineEdit(self)
+        self.buttons = QtGui.QDialogButtonBox(self)
+        self.buttons.setStandardButtons(QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
+        layout.addWidget(self.hostname_label, 0, 0)
+        layout.addWidget(self.hostname, 0, 1)
+        layout.addWidget(self.database_label, 1, 0)
+        layout.addWidget(self.database, 1, 1)
+        layout.addWidget(self.buttons, 2, 0, 1, 2)
+
+        self.buttons.accepted.connect(self.accept)
+        self.buttons.rejected.connect(self.reject)
         
     def get_data(self, name):
         self.setWindowTitle('%s - Database Settings' % name)

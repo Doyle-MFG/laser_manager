@@ -20,8 +20,60 @@ class Schedule(QtGui.QMainWindow):
     schedule_data = None
 
     def __init__(self, schedule, parent=None):
-        QtGui.QMainWindow.__init__(self, parent)
-        uic.loadUi('ui/schedule.ui', self)
+        QtGui.QWidget.__init__(self, parent)
+        self.setObjectName("Schedule")
+        self.resize(931, 637)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/icons/production.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.setWindowIcon(icon)
+        self.setStyleSheet("background-color: rgb(200, 200, 200);")
+        self.centralwidget = QtGui.QWidget(self)
+        self.verticalLayout = QtGui.QVBoxLayout(self.centralwidget)
+        self.horizontalLayout = QtGui.QHBoxLayout()
+        self.title = QtGui.QLabel(self.centralwidget)
+        font = QtGui.QFont()
+        font.setFamily("Terminus")
+        font.setPointSize(24)
+        font.setBold(True)
+        font.setWeight(75)
+        self.title.setFont(font)
+        self.horizontalLayout.addWidget(self.title)
+        spacerItem = QtGui.QSpacerItem(478, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout.addItem(spacerItem)
+        self.horizontalLayout.setStretch(1, 1)
+        self.verticalLayout.addLayout(self.horizontalLayout)
+        self.line = QtGui.QFrame(self.centralwidget)
+        self.line.setFrameShape(QtGui.QFrame.HLine)
+        self.line.setFrameShadow(QtGui.QFrame.Sunken)
+        self.verticalLayout.addWidget(self.line)
+        self.scrollArea = QtGui.QScrollArea(self.centralwidget)
+        self.scrollArea.setFrameShape(QtGui.QFrame.NoFrame)
+        self.scrollArea.setWidgetResizable(True)
+        self.scrollAreaWidgetContents_2 = QtGui.QWidget()
+        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 919, 530))
+        self.horizontalLayout_2 = QtGui.QHBoxLayout(self.scrollAreaWidgetContents_2)
+        self.horizontalLayout_2.setSpacing(0)
+        self.horizontalLayout_2.setMargin(0)
+        self.scheduleFrame = QtGui.QFrame(self.scrollAreaWidgetContents_2)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.scheduleFrame.sizePolicy().hasHeightForWidth())
+        self.scheduleFrame.setSizePolicy(sizePolicy)
+        self.scheduleFrame.setStyleSheet("background-color: rgb(255, 255, 255);")
+        self.scheduleFrame.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.scheduleFrame.setFrameShadow(QtGui.QFrame.Raised)
+        self.verticalLayout_2 = QtGui.QVBoxLayout(self.scheduleFrame)
+        self.verticalLayout_2.setSpacing(6)
+        self.verticalLayout_2.setSizeConstraint(QtGui.QLayout.SetMinimumSize)
+        self.verticalLayout_2.setContentsMargins(-1, 4, -1, 5)
+        self.horizontalLayout_2.addWidget(self.scheduleFrame)
+        self.scrollArea.setWidget(self.scrollAreaWidgetContents_2)
+        self.verticalLayout.addWidget(self.scrollArea)
+        spacerItem1 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.verticalLayout.addItem(spacerItem1)
+        self.verticalLayout.setStretch(2, 1)
+        self.setCentralWidget(self.centralwidget)
         self.schedule = schedule
         self.setWindowTitle("%s Manager" % self.schedule)
         self.title.setText("%s Manager" % self.schedule)
@@ -95,7 +147,6 @@ class Schedule(QtGui.QMainWindow):
                 self.updateSchedule.emit(qry)
                 QtGui.QApplication.alert(self)
         else:
-            dbConnection.db_err(qry)
             self.killTimer(event.timerId())
             event.ignore()
     
@@ -114,12 +165,12 @@ class Schedule(QtGui.QMainWindow):
         """
         Lays out the Gui for a new row using the data from rec
         """
-        row = uic.loadUi('ui/newRow.ui')
+        row = functions.NewRow()
         row.priority.setText(rec.value(0).toString().rightJustified(3, QtCore.QChar('0')))
-        row.jobNumber.setText(rec.value(1).toString())
+        row.job_number.setText(rec.value(1).toString())
         row.notes.setPlainText(rec.value(9).toString())
         row.material.setText(rec.value(3).toString())
-        row.materialQty.setText(rec.value(4).toString())
+        row.material_qty.setText(rec.value(4).toString())
         row.running = rec.value(5).toString()
         row.finished = rec.value(6).toString()
         row.modifying = rec.value(7).toString()
@@ -127,25 +178,25 @@ class Schedule(QtGui.QMainWindow):
         
         row.material.setCompleter(functions.MaterialCompleter())
         
-        row.printReport.setEnabled(has_print)
+        row.print_report.setEnabled(has_print)
         
         #Sets the different row styles depending on the row status
         row = functions.set_row_style(row)
 
         row.modified = False
         
-        row.printReport.clicked.connect(self.print_report)
-        row.hideJob.clicked.connect(self.hide_job_)
-        row.editJob.clicked.connect(self.edit_job_)
-        row.uploadPDF.clicked.connect(self.upload_report_)
+        row.print_report.clicked.connect(self.print_report)
+        row.hide_job.clicked.connect(self.hide_job_)
+        row.edit_job.clicked.connect(self.edit_job_)
+        row.upload_pdf.clicked.connect(self.upload_report_)
         
         row.priority.textEdited.connect(self.row_edited)
         row.material.textEdited.connect(self.row_edited)
-        row.materialQty.textEdited.connect(self.row_edited)
+        row.material_qty.textEdited.connect(self.row_edited)
         
         row.priority.editingFinished.connect(self.row_editing_finished)
         row.material.editingFinished.connect(self.row_editing_finished)
-        row.materialQty.editingFinished.connect(self.row_editing_finished)
+        row.material_qty.editingFinished.connect(self.row_editing_finished)
         
         self.scheduleFrame.layout().addWidget(row)
         return
@@ -155,7 +206,7 @@ class Schedule(QtGui.QMainWindow):
         Called via signal. Hides the sender row.
         """
         #Find the sender
-        job_num = self.sender().parent().parent().job
+        job_num = self.sender().parent().job
         
         #Open the connection to the master database server
         dbw, ok = dbConnection.new_connection('write', 'riverview', 'riverview')
@@ -176,7 +227,7 @@ class Schedule(QtGui.QMainWindow):
         Called via signal. Marks the sender row as being modified.
         """
         #Find the sender
-        job_num = self.sender().parent().parent().job
+        job_num = self.sender().parent().job
         
         #Open the connection to the master database server
         dbw, ok = dbConnection.new_connection('write', 'riverview', 'riverview')
@@ -195,7 +246,7 @@ class Schedule(QtGui.QMainWindow):
         Marks the current row as red if it has been modified
         """
         #Find the sender
-        row = self.sender().parent().parent()
+        row = self.sender().parent()
         row.setStyleSheet('background-color:rgb(200,40,40);')
     
     def row_editing_finished(self):
@@ -203,14 +254,14 @@ class Schedule(QtGui.QMainWindow):
         Saves the current row data to the database
         """
         #Find the sender
-        row = self.sender().parent().parent()
+        row = self.sender().parent()
         data = [row.job, row.priority.text(), 
-                row.material.text(), row.materialQty.text()]
+                row.material.text(), row.material_qty.text()]
         dbw, ok = dbConnection.new_connection('write', 'riverview', 'riverview')
         if ok:
             qry = query("update_work_order", data, dbw)
             if qry:
-                row.frame.setStyleSheet('')
+                row.setStyleSheet('')
     
     def upload_report_(self):
         """
@@ -218,7 +269,7 @@ class Schedule(QtGui.QMainWindow):
         print it from their scheduler.
         """
         #Find the sender
-        job_num = self.sender().parent().parent().job
+        job_num = self.sender().parent().job
         
         #Get the last directory that was used
         last_laser = str(functions.read_settings('last_laser').toString())
@@ -246,7 +297,7 @@ class Schedule(QtGui.QMainWindow):
         
         The part routers are created and the laser sheets are downloaded
         """
-        job_num = self.sender().parent().parent().job
+        job_num = self.sender().parent().job
         qry = query("get_pdf", [job_num])
         if qry:
             if qry.first():

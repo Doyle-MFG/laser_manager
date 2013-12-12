@@ -18,8 +18,9 @@ class Main(QtGui.QMainWindow):
     schedule_data = None
 
     def __init__(self, parent=None):
-        QtGui.QMainWindow.__init__(self, parent)
-        uic.loadUi('ui/laser_manager.ui', self)
+        QtGui.QMainWindow.__init__(self)
+        self.setObjectName("Laser Schedule")
+        self.resize(1024, 768)
         
         #Restore the size and position of the window from the settings file
         geometry = functions.read_settings('geometry').toByteArray()
@@ -36,6 +37,7 @@ class Main(QtGui.QMainWindow):
         self.setCentralWidget(self.tool_box)
         self.tool_box.addItem(self.cl850, "CL850")
         self.tool_box.addItem(self.cl940, "CL940")
+        db = dbConnection.DatabaseSettings()
 
     def closeEvent(self, event):
         """

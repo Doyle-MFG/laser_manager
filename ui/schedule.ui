@@ -17,7 +17,7 @@
    <string>CL850 Manager [*]</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../graphics/graphics.qrc">
+   <iconset>
     <normaloff>:/icons/production.png</normaloff>:/icons/production.png</iconset>
   </property>
   <property name="styleSheet">
@@ -142,7 +142,7 @@
   </widget>
  </widget>
  <resources>
-  <include location="../graphics/graphics.qrc"/>
+  <include location="../graphics.qrc"/>
  </resources>
  <connections/>
 </ui>
